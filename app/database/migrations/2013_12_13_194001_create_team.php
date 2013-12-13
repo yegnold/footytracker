@@ -14,7 +14,7 @@ class CreateTeam extends Migration {
 		// Create the players initial database table.
 		Schema::create('teams', function($table) {
 			$table->increments('id');
-			$table->integer('name');
+			$table->string('name', 128);
 			$table->integer('match_id')->index();
 			$table->integer('score');
 			$table->timestamps();
