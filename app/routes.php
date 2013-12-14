@@ -11,6 +11,13 @@
 |
 */
 
+// FootyTracker homepage.
+Route::get('/', '\yegnold\footytracker\FootyTrackerHomeController@index');
+
+
+// Management of Players
+Route::resource('player', '\yegnold\footytracker\PlayerController');
+
 /**
  * Experiment methods to see if I understood Eloquent correctly
  */
