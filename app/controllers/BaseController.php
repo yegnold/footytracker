@@ -15,4 +15,8 @@ class BaseController extends Controller {
 		}
 	}
 
+	public function missingMethod($method, $parameters = array()) {
+		App::abort(404);
+	}
+
 }

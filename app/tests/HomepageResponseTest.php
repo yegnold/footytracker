@@ -1,27 +1,16 @@
 <?php
-
-class HomepageResponseTest extends TestCase {
+require_once 'ResponseTest.php';
+class HomepageResponseTest extends ResponseTest {
 
 	/**
-	 * Does the homepage of the application return with an OK HTTP response?
+	 * Does the homepage of the application return with an OK HTTP response with a heading of FootyTracker?
 	 *
 	 * @return void
 	 */
-	public function testHomepageResponseOk()
+	public function testHomepageResponse()
 	{
 		$crawler = $this->client->request('GET', '/');
-
-		$this->assertTrue($this->client->getResponse()->isOk());
-	}
-
-	/**
-	 * Does the homepage of the application return a h1 heading containing 'FootyTracker'?
-	 */
-	public function testH1Content() {
-		/**
-		 * Does the homepage of the application return a h1 heading containing 'FootyTracker'?
-		 */
-		$crawler = $this->client->request('GET', '/');
+		$this->isHTMLResponseOk($crawler);
 		$this->assertCount(1, $crawler->filter('h1:contains("FootyTracker")'));
 	}
 

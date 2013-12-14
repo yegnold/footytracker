@@ -6,7 +6,7 @@
 	<h1>FootyTracker</h1>
 	<ul>
 		<li>
-			<a href="{{ url('player/index') }}">Players</a>
+			<a href="{{ url('player') }}">Players</a>
 		</li>
 	</ul>
 </div>

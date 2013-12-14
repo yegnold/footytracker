@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'http://local.twixcoding.com/sandbox/footytracker',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ return array(
 	|
 	*/
 
-	'key' => 'YourSecretKey!!!',
+	'key' => 'xs5s6qwewr5dsdsafqwetrys9822xfa2',
 
 	/*
 	|--------------------------------------------------------------------------
