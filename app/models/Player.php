@@ -38,8 +38,8 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
 	 * Validation for Players
 	 */
 	protected $rules = array(
-        'first_name' => 'required|min:2|max:128',
-        'last_name' => 'required|min:2|max:128',
+        'first_name' => 'required|min:2|max:25',
+        'last_name' => 'required|min:2|max:25',
         'email' => 'required|email',
         'password' => 'required|min:6|confirmed',
     );
