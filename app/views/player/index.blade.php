@@ -2,7 +2,13 @@
 
 @section('main_content')
 	<h1>Players</h1>
-	<a href="{{ route('player.create') }}">Add Player</a>
+	<a href="{{ url('player/create') }}">Add Player</a>
+
+	@if (Session::has('message'))
+		<p>
+		{{ Session::get('message') }}
+		</p>
+	@endif
 
 	@if ($players->isEmpty())
 		<p>No players have been added yet.</p>
@@ -17,7 +23,7 @@
 			<tbody>
 				@foreach($players as $player)
 				<tr>
-					<th>{{{ $player->first_name }}}{{{ $player->last_name }}}</th>
+					<th>{{{ $player->first_name }}} {{{ $player->last_name }}}</th>
 					<th>Bee Eff</th>
 				</tr>
 				@endforeach

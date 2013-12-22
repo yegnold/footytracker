@@ -11,7 +11,7 @@ namespace yegnold\footytracker;
  * stuck with one hasMany relationship as this makes it easier to report on things
  * such as 'most consecutive appearances'
  */
-class Match extends \Eloquent
+class Match extends ValidatableModel
 {
 	/**
 	 * This would work out of the box with the auto-guessing of table names

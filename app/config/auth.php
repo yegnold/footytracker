@@ -28,7 +28,10 @@ return array(
 	|
 	*/
 
-	'model' => 'User',
+	/**
+	 * In footytracker we will use the 'Player' model to log in and access the app
+	 */
+	'model' => 'Player',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -41,7 +44,11 @@ return array(
 	|
 	*/
 
-	'table' => 'users',
+	/**
+	 * Though I plan on using the 'eloquent' authentication driver,
+	 * thought I'd better change this anyway to a more sensible value
+	 */
+	'table' => 'players',
 
 	/*
 	|--------------------------------------------------------------------------
