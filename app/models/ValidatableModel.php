@@ -1,5 +1,4 @@
-<?php
-namespace yegnold\footytracker;
+<?php namespace yegnold\footytracker;
 
 use Validator;
 

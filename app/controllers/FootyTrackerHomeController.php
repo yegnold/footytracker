@@ -1,11 +1,9 @@
-<?php
-namespace yegnold\footytracker;
+<?php namespace yegnold\footytracker;
 
 use View;
 use BaseController;
 
-class FootyTrackerHomeController extends BaseController
-{
+class FootyTrackerHomeController extends BaseController {
 
 	public function index()
 	{

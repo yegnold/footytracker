@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://local.twixcoding.com/sandbox/footytracker',
+	'url' => 'http://laptop.twixcoding.com/sandbox/footytracker',
 
 	/*
 	|--------------------------------------------------------------------------

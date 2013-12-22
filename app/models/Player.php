@@ -1,8 +1,8 @@
-<?php
-namespace yegnold\footytracker;
+<?php namespace yegnold\footytracker;
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
+use Hash;
 /**
  * A 'Player' is someone that participates in the football group being tracked by footytracker.
  * They have a 'volatile' relationship with Teams, i.e. they can be affiliated with a different
@@ -12,8 +12,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * i.e. it implements UserInterface and RemindableInterface.
  * This is because this model will be used for accessing the app.
  */
-class Player extends ValidatableModel implements UserInterface, RemindableInterface
-{
+class Player extends ValidatableModel implements UserInterface, RemindableInterface {
 
 	/**
 	 * This would work out of the box with the auto-guessing of table names
@@ -82,5 +81,12 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
 	public function getReminderEmail()
 	{
 		return $this->email;
+	}
+
+	/**
+	 * We want our model to handle the hashing of the password
+	 */
+	public function setPasswordAttribute($password) {
+		$this->attributes['password'] = Hash::make($password);
 	}
 }

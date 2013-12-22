@@ -1,5 +1,4 @@
-<?php
-namespace yegnold\footytracker;
+<?php namespace yegnold\footytracker;
 
 use BaseController;
 use View;
@@ -45,7 +44,8 @@ class PlayerController extends BaseController {
 			$player->first_name = Input::get('first_name');
 			$player->last_name = Input::get('last_name');
 			$player->email = Input::get('email');
-			$player->password = Hash::make(Input::get('password'));
+			// No  hash here, because the Player model should do this.
+			$player->password = Input::get('password');
 			$player->mobile = Input::get('mobile');
 			$player->save();
 			return Redirect::to('player/index')->with('message', 'The player was created');

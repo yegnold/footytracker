@@ -1,6 +1,6 @@
 <?php
 require_once 'ResponseTest.php';
-class PlayerControllerTest extends ResponseTest {
+class PlayerResponseTest extends ResponseTest {
 	
 	// The 'index' action should return a 2** HTTP response with a h1 containing "Players"
 	public function testIndexResponse()

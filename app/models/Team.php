@@ -1,12 +1,10 @@
-<?php
-namespace yegnold\footytracker;
+<?php namespace yegnold\footytracker;
 
  /**
   * For the purposes of the footytracker app, 'teams' are match-specific.
   * They don't work like 'teams' in a football league, teams last for one match only.
   */
-class Team extends ValidatableModel
-{
+class Team extends ValidatableModel {
 	/**
 	 * This would work out of the box with the auto-guessing of table names
 	 * but I prefer to be explicit.
