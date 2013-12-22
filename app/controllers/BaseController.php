@@ -14,9 +14,4 @@ class BaseController extends Controller {
 			$this->layout = View::make($this->layout);
 		}
 	}
-
-	public function missingMethod($method, $parameters = array()) {
-		App::abort(404);
-	}
-
 }

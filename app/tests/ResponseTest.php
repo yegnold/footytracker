@@ -2,7 +2,6 @@
 /**
  * I'm going to define the isResponseOk method in it's own class
  * as this test is going to be shared by most actions in my application
- * DRY!
  */
 class ResponseTest extends TestCase {
 
