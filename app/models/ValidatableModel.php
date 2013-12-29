@@ -18,8 +18,18 @@ class ValidatableModel extends \Eloquent {
     protected $errors;
     protected $failed_rules;
 
-    public function validate($data)
+    public function validate($data = null)
     {
+
+        // If no data is passed in directly, validate the data set against the current instance of the model
+        if($data === null) {
+            $data = $this->attributesToArray();
+        }
+
+        if(!is_array($data)) {
+            throw new CantValidateModelDataNotAnArrayException;
+        }
+
         // Reset Errors.
         $this->errors = null;
         $this->failed_rules = null;
@@ -48,3 +58,5 @@ class ValidatableModel extends \Eloquent {
         return $this->failed_rules;
     }
 }
+
+class CantValidateModelDataNotAnArrayException extends \Exception { }
