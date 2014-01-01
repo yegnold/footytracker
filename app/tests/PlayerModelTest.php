@@ -2,11 +2,14 @@
 
 // We are testing the \yegnold\footytracker\Player model.
 use \yegnold\footytracker\Player;
+use Way\Tests\Factory;
 
 class PlayerModelTest extends TestCase {
 	protected $player;
 
 	public function setUp() {
+		// As this is a model test, we will probably be running some database-related tests. :)
+		$this->setUpDatabase();
 		$this->player = new Player;
 	}
 
@@ -139,25 +142,73 @@ class PlayerModelTest extends TestCase {
 	}
 
 	/**
-	 * Two users should not be created with the same e-mail address, so verify that we fail if we try to do this.
-	 */
-	public function testIsInvalidDuplicateEmail() {
-
-	}
-
-	/**
-	 * Confirm that setting the password attribute of a Player model
+	 * Confirm that setting the password attribute of a Player model to a non-empty value
 	 * triggers an automated hashing of that attribute
 	 * This was shamelessly stolen as an idea from the 'Laravel Testing Decoded' book
 	 * by Jeffrey Way.
 	 */
-	public function testPasswordIsHashed() {
+	public function testPopulatedPasswordIsHashed() {
 		// Mock the hash object using Mockery.
 		Hash::shouldReceive('make')->once()->andReturn('hashed');
 		$this->player->password = 'foo';
 		$this->assertEquals('hashed', $this->player->password, 'Expected password to be automatically hashed by the player model');
 	}
 
+	/**
+	 * If the password is set to an empty string we don't want to
+	 * hash the empty string
+	 */
+	public function testEmptyPasswordRemainsEmpty() {
+		$this->player->password = '';
+		$this->assertEquals('', $this->player->password, 'Empty password expected to be left as the empty string');
+	}
 
+
+
+	/**
+	 * An existing user providing no new password shouldn't need to provide or confirm password etc
+	 */
+	public function testIsValidExistingUserNoPassword() {
+		// Make a generated player with an ID and empty password field
+		$generated_player = Factory::make('\yegnold\footytracker\Player', array('id' => 22, 'password' => ''));
+		$this->assertTrue($generated_player->validate(), 'Expected existing player not providing a new password to validate.');
+	}
+
+	/**
+	 * .. but an existing user providing a password should need to confirm it
+	 */
+	public function testIsInvalidExistingUserResetPasswordNoConfirmation() {
+		// Make a generated player with an ID and filled password field, but no confirm password field
+		$generated_player_attributes = Factory::attributesFor('\yegnold\footytracker\Player', array('id' => 22, 'password' => 'abc123'));
+		$this->assertFalse($this->player->validate($generated_player_attributes), 'Expected existing player resetting password to fail validation');
+		$this->assertTrue($this->player->errors()->has('password'));
+		$failures = $this->player->failures();
+		$this->assertArrayHasKey('Confirmed', $failures['password']);
+	}
+
+	/**
+	 * Two users should not be created with the same e-mail address, so verify that we fail if we try to do this.
+	 */
+	public function testIsInvalidDuplicateEmail() {
+		// Our database seeds create a player player1@footytracker.example.org
+		// So creating another one of these should fail.
+		$generated_player_attributes = Factory::attributesFor('\yegnold\footytracker\Player', array('email' => 'player1@footytracker.example.org'));
+		$this->assertFalse($this->player->validate($generated_player_attributes), 'Expected player to fail validation due to duplicate email');
+		$this->assertTrue($this->player->errors()->has('email'), 'Expected player to fail validation due to duplicate email: email error doesnt exist');
+		$failures = $this->player->failures();
+		$this->assertArrayHasKey('Unique', $failures['email'], 'Expected player to fail validation due to duplicate email: Unique failure not present.');
+	}
+
+	/**
+	 * An existing user should be able to change their e-mail address to their own
+	 */
+	public function testIsValidWithOwnEmail() {
+		// We already created player1@footytracker.example.org in our database seeding...
+		$loaded_player = \yegnold\footytracker\Player::whereEmail('player1@footytracker.example.org')->firstOrFail();
+		$loaded_player->password = '';
+		$this->assertTrue($loaded_player->validate(), 'Expected player loaded from database to pass validation');
+	}
+
+	
 
 }

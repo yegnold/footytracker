@@ -40,7 +40,7 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
 	protected $rules = array(
         'first_name' => 'required|min:2|max:25',
         'last_name' => 'required|min:2|max:25',
-        'email' => 'required|email',
+        'email' => 'required|email|unique:players,email',
         'password' => 'required|min:6|confirmed',
     );
 
@@ -87,6 +87,10 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
 	 * We want our model to handle the hashing of the password
 	 */
 	public function setPasswordAttribute($password) {
-		$this->attributes['password'] = Hash::make($password);
+		if(strlen($password)) {
+			$this->attributes['password'] = Hash::make($password);
+		} else {
+			$this->attributes['password'] = $password;
+		}
 	}
 }
