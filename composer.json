@@ -4,10 +4,12 @@
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
 	"require": {
-		"laravel/framework": "4.1.*"
+		"laravel/framework": "4.1.*",
+		"doctrine/dbal": "~2.3"
 	},
 	"require-dev": {
-        "mockery/mockery": "dev-master@dev"
+        "mockery/mockery": "dev-master@dev",
+        "way/laravel-test-helpers": "dev-master"
     },
 	"autoload": {
 		"classmap": [

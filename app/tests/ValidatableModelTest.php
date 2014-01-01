@@ -61,6 +61,118 @@ class ValidatableModelTest extends TestCase {
 	}
 
 	/**
+	 * We should only accept static rules in the format of an array, with string keys and string values
+	 */
+
+	/**
+	 * This first test checks that we're not allowed to set a static rule with a non-array input
+	 * @expectedException \yegnold\footytracker\InvalidStaticRuleException
+	 */
+	public function testStaticRuleSetFailsWithNonArrayInput() {
+
+		// Clear the Mocks we used in earlier tests
+		$this->refreshApplication();
+
+		$set_requirements = 'dave';
+		$this->validatable_model->setStaticRules($set_requirements);
+	}
+
+	/**
+	 * This second test checks that we're not allowed to do this with invalid array formats
+	 * it should throw an InvalidStaticRuleException when passed a multidimensional array.
+	 * @expectedException \yegnold\footytracker\InvalidStaticRuleException
+	 */
+	public function testSetStaticRulesFailsWithMultidimensionalArrayInput() {
+		$set_requirements = array('multidimensional' => array('multidimensional' => 'array'));
+		$this->validatable_model->setStaticRules($set_requirements);
+	}
+
+	/**
+	 * Check setStaticRules and getStaticRules work properly with valid arguments
+	 */
+	public function testSetAndGetStaticRules() {
+		$set_requirements = array('name' => 'required');
+		$this->validatable_model->setStaticRules($set_requirements);
+		$this->assertEquals($this->validatable_model->getStaticRules(), $set_requirements, 'Expected getStaticRules() to match input from setStaticRules().');
+	}
+
+
+	/**
+	 * We should only accept sometimes rules in the format of a multidimensional array
+	 *
+	 */
+
+	/**
+	 * The first test checks that we reject a basic string input which is invalid.
+	 * @expectedException \yegnold\footytracker\InvalidSometimesRuleException
+	 */
+	public function testSetSometimesRulesFailsWithNonArrayInput() {
+		$set_sometimes = 'peter';
+		$this->validatable_model->setSometimesRules($set_sometimes);
+	}
+
+	/**
+	 * The second test checks that we reject a basic array 
+	 * not formatted correctly.
+	 * @expectedException \yegnold\footytracker\InvalidSometimesRuleException
+	 */
+	public function testSetSometimesRulesFailsWithIncorrectArrayInput() {
+		$set_sometimes = array('1', '2', '3');
+		$this->validatable_model->setSometimesRules($set_sometimes);
+	}
+
+	/** 
+	 * The third test checks that we reject a complex multidimensional array
+	 * not matching the expected format.
+	 * @expectedException \yegnold\footytracker\InvalidSometimesRuleException
+	 */
+	public function testSetSometimesRulesFailsWithIncorrectMultidimensionalArrayInput() {
+		$set_sometimes = array(array('1', '2', '3'), array('3','4','5'));
+		$this->validatable_model->setSometimesRules($set_sometimes);
+	}
+
+	/**
+	 * Utility method to get valid sometimes rules which are used in multiple tests
+	 */
+	protected function getValidSometimesRules() {
+		return array(
+			array('first_name', 'min:4', function($input) {  return $input->name != 'Joe'; } ), 
+			array('last_name', 'min:4', function($input) {  return $input->name != 'Smo'; } )
+		);
+
+	}
+
+	/**
+	 * Check setStaticRules and getStaticRules work properly with valid arguments
+	 */
+	public function testSetAndGetSometimesRules() {
+		$set_sometimes = $this->getValidSometimesRules();
+
+		$this->validatable_model->setSometimesRules($set_sometimes);
+		// Using assertSame as this should type-check as well as value-check.
+		$this->assertSame($this->validatable_model->getSometimesRules(), $set_sometimes, "Expected output of getSometimesRules to match input to setSometimesRules when input is valid...");
+	}
+
+	/**
+	 * Check that if we apply some 'sometimes' rules, that they are applied to the validator class.
+	 */
+	public function testSometimesRuleApplied() {
+		$this->validatable_model->setStaticRules(array());
+		$this->validatable_model->setSometimesRules($this->getValidSometimesRules());
+
+		// I don't care about the validator's implementation of validation, but I do care
+		// that if we've passed in sometimes rules, then they are set on the object.
+		$mocked_validator = Mockery::mock();
+		$mocked_validator->shouldReceive('sometimes')->atLeast()->times(2);
+		$mocked_validator->shouldReceive('fails')->once()->andReturn(false);
+
+		Validator::shouldReceive('make')->once()->andReturn($mocked_validator);
+		
+
+		$this->assertTrue($this->validatable_model->validate(array('first_name' => 'Hello', 'last_name' => 'Mate')));
+
+	}
+	/**
 	 * It would be good to be able to author some tests that check that
 	 * the correct values are returned in errors() and failed(), need
 	 * to read up on how we can test MessageBag effectively in this instance

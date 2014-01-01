@@ -13,10 +13,109 @@ use Validator;
  * 
  */
 class ValidatableModel extends \Eloquent {
+    
+    /**
+     * Static rules that don't change
+     * @var array 
+     */
     protected $rules = array();
+
+    /**
+     * 'Sometimes' rules for use in conjunction with Validator->sometimes
+     * Should be in the format array(
+     *  array('field', 'validation_rules', function($input) { return $input->test > 0; } )
+     * )
+     *
+     * @var array
+     */
+    protected $sometimes_rules = array();
 
     protected $errors;
     protected $failed_rules;
+
+    /**
+     * This method can be used to get the static validation rules for the model.
+     * @return array
+     */
+    public function getStaticRules() 
+    { 
+        return $this->rules; 
+    }
+
+    /**
+     * This method can be used to change the static validation rules on the model, post-instantiation.
+     * @param array $rules - Single dimensional array of rules, the same as expected by Validator::make()
+     */
+    public function setStaticRules($rules) 
+    { 
+        /**
+         * Validate format of static rules passed in
+         */
+        
+        // $rules should be an array.
+        if(!is_array($rules)) {
+            throw new InvalidStaticRuleException('setStaticRules expects an array in parameter $rules');
+        }
+
+        // $rules should be an array consisting solely of 'string' keys and 'string' values.
+        $hit_invalid_item = false;
+        foreach($rules as $k => $v) {
+            if(!is_string($k) || !is_string($v)) {
+                $hit_invalid_item = true;
+                break;
+            }
+        }
+        if($hit_invalid_item) { 
+            throw new InvalidStaticRuleException('setStaticRules expects a single dimensional array with string keys and string values.');
+        }
+
+        $this->rules = $rules; 
+    }
+
+    /**
+     * This method can be used to get the 'sometimes' rules on the model
+     * @return array
+     */
+    public function getSometimesRules() 
+    { 
+        return $this->sometimes_rules; 
+    }
+
+    /**
+     * This method can be used to change the 'sometimes' validation rules on the model
+     * @param array $rules - Multi-dimensional array (top level a list of second level, 3-item arrays: 
+     *   key 0: field name, key 1: validation rules, key 2: closure to check input)
+     *
+     * Example, imagine having a minimum rule for 'name' of 4 characters except for "jon":
+     * $this->setSometimesRules(array(array('name', 'min:4', function($input) { return ($input->name != 'Jon'); }))));
+     *
+     */
+    public function setSometimesRules($rules)
+    { 
+       /**
+         * Validate format of sometimes rules passed in
+         */
+        
+        // $rules should be an array.
+        if(!is_array($rules)) {
+            throw new InvalidSometimesRuleException('setSometimesRules expects an array in parameter $rules');
+        }
+
+        // $rules should be an array consisting of other arrays, each 3-items long with [0] a string, [1] a string and [2] a Closure.
+        $hit_invalid_item = false;
+        foreach($rules as $k => $v) {
+            // I'm using is_callable below, but would prefer $v[2] instanceof Closure = behaviour of instanceof Closure "should not be depended on" in PHP 5.3.
+            if(!is_array($v) || count($v) != 3 || !is_string($v[0]) || !is_string($v[1]) || !is_callable($v[2])) {
+                $hit_invalid_item = true;
+                break;
+            }
+        }
+        if($hit_invalid_item) { 
+            throw new InvalidSometimesRuleException('setSometimesRules expects a multidimensonal array with a list of 3-key long arrays within, those arrays containing field name, validation rules and a closure..');
+        }
+
+        $this->sometimes_rules = $rules; 
+    }
 
     public function validate($data = null)
     {
@@ -36,6 +135,9 @@ class ValidatableModel extends \Eloquent {
 
         // make a new validator object
         $v = Validator::make($data, $this->rules);
+
+        // Add any sometimes rules.
+        
 
         // check for failure
         if ($v->fails())
@@ -59,4 +161,8 @@ class ValidatableModel extends \Eloquent {
     }
 }
 
+// Thrown when we try to setStaticRules() with an incorrectly formatted array.
+class InvalidStaticRuleException extends \Exception { }
+// Thrown when we try to setSometimesRules() with an incorrectly formatted array.
+class InvalidSometimesRuleException extends \Exception { }
 class CantValidateModelDataNotAnArrayException extends \Exception { }
