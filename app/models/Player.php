@@ -44,6 +44,25 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
         'password' => 'required|min:6|confirmed',
     );
 
+    protected function beforeValidate(&$data) {
+    	/**
+    	 * If we're an existing player the requirement on password becomes 'optional' ('sometimes')
+    	 */
+    	if(array_key_exists('id', $data) && strlen($data['id'])) {
+    		unset($this->rules['password']);
+
+    		// We still want to validate the password but only if one's supplied (i.e. the user attempts to reset their password)
+    		$sometimes_rules = $this->getSometimesRules();
+    		$new_sometimes_rule = array(
+    			'password',
+    			'required|min:6|confirmed',
+    			function($input) { return (bool)strlen($input->password); }
+			);
+    		array_push($sometimes_rules, $new_sometimes_rule);
+    		$this->setSometimesRules($sometimes_rules);
+    	}
+    }
+
 	/**
 	 * One player can appear in many teams (across different weeks)
 	 * Note. This system currently has no way of representing the situation where a player

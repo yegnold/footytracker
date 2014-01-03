@@ -117,6 +117,12 @@ class ValidatableModel extends \Eloquent {
         $this->sometimes_rules = $rules; 
     }
 
+    /**
+     * This method is called before the validation of the data is applied in $this->validate()
+     * This can be extended by other models to dynamically alter validation rules dependent on input.
+     */
+    protected function beforeValidate(&$data) { }
+
     public function validate($data = null)
     {
 
@@ -129,15 +135,20 @@ class ValidatableModel extends \Eloquent {
             throw new CantValidateModelDataNotAnArrayException;
         }
 
+        // Trigger the beforeValidate callback.
+        $this->beforeValidate($data);
+
         // Reset Errors.
         $this->errors = null;
         $this->failed_rules = null;
 
         // make a new validator object
         $v = Validator::make($data, $this->rules);
-
+        // Me experimenting with mocks: var_dump($v instanceof \Mockery\MockInterface);
         // Add any sometimes rules.
-        
+        foreach($this->sometimes_rules as $sometimes_rule) {
+            $v->sometimes($sometimes_rule[0], $sometimes_rule[1], $sometimes_rule[2]);
+        }
 
         // check for failure
         if ($v->fails())

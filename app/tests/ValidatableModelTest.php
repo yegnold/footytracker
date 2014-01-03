@@ -33,6 +33,10 @@ class ValidatableModelTest extends TestCase {
 	}
 
 	/**
+	 * TODO: Test to see if beforeValidate() method is called with the $data parameter
+	 */
+
+	/**
 	 * Test that if validation passes, we get true back
 	 */
 	public function testReturnsTrueIfValidationPasses() {

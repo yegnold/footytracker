@@ -178,12 +178,15 @@ class PlayerModelTest extends TestCase {
 	 * .. but an existing user providing a password should need to confirm it
 	 */
 	public function testIsInvalidExistingUserResetPasswordNoConfirmation() {
-		// Make a generated player with an ID and filled password field, but no confirm password field
-		$generated_player_attributes = Factory::attributesFor('\yegnold\footytracker\Player', array('id' => 22, 'password' => 'abc123'));
-		$this->assertFalse($this->player->validate($generated_player_attributes), 'Expected existing player resetting password to fail validation');
-		$this->assertTrue($this->player->errors()->has('password'));
-		$failures = $this->player->failures();
-		$this->assertArrayHasKey('Confirmed', $failures['password']);
+
+		$new_player = new \yegnold\footytracker\Player;
+	    // Validate a generated player with an ID and filled password field, but no confirm password field
+		// passing in attribtuesFor() as 'password' and 'confirm password' validation only works when a model is validated
+		// using a passed-in array.
+		$this->assertFalse($new_player->validate(Factory::attributesFor('\yegnold\footytracker\Player', array('id' => 22, 'password' => 'abc123'))), 'Expected existing player resetting password with no confirmation to fail validation');
+		$this->assertTrue($new_player->errors()->has('password'), 'Expected existing player resetting password with no confirmation to fail validation because of password field');
+		$failures = $new_player->failures();
+		$this->assertArrayHasKey('Confirmed', $failures['password'], 'Expected existing player resetting password with no confirmation to fail validation because of password field not being confirmed');
 	}
 
 	/**
@@ -192,10 +195,10 @@ class PlayerModelTest extends TestCase {
 	public function testIsInvalidDuplicateEmail() {
 		// Our database seeds create a player player1@footytracker.example.org
 		// So creating another one of these should fail.
-		$generated_player_attributes = Factory::attributesFor('\yegnold\footytracker\Player', array('email' => 'player1@footytracker.example.org'));
-		$this->assertFalse($this->player->validate($generated_player_attributes), 'Expected player to fail validation due to duplicate email');
-		$this->assertTrue($this->player->errors()->has('email'), 'Expected player to fail validation due to duplicate email: email error doesnt exist');
-		$failures = $this->player->failures();
+		$generated_player = Factory::make('\yegnold\footytracker\Player', array('email' => 'player1@footytracker.example.org'));
+		$this->assertFalse($generated_player->validate(), 'Expected player to fail validation due to duplicate email');
+		$this->assertTrue($generated_player->errors()->has('email'), 'Expected player to fail validation due to duplicate email: email error doesnt exist');
+		$failures = $generated_player->failures();
 		$this->assertArrayHasKey('Unique', $failures['email'], 'Expected player to fail validation due to duplicate email: Unique failure not present.');
 	}
 
@@ -207,6 +210,20 @@ class PlayerModelTest extends TestCase {
 		$loaded_player = \yegnold\footytracker\Player::whereEmail('player1@footytracker.example.org')->firstOrFail();
 		$loaded_player->password = '';
 		$this->assertTrue($loaded_player->validate(), 'Expected player loaded from database to pass validation');
+	}
+
+	/**
+	 * An existing user should not be able to change their e-mail address to one used by another account
+	 */
+	public function testIsInvalidChangingToExistingEmail() {
+		// We already created player1@footytracker.example.org in our database seeding...
+		$loaded_player = \yegnold\footytracker\Player::whereEmail('player1@footytracker.example.org')->firstOrFail();
+		$loaded_player->email = 'player2@footytracker.example.org';
+		$loaded_player->password = '';
+		$this->assertFalse($loaded_player->validate(), 'Expected player changing e-mail to another known email to fail validation');
+		$failures = $loaded_player->failures();
+		$this->assertArrayHasKey('email', $failures, 'Expected player changing e-mail to another known email to fail validation due to email problem: email didnt fail validation');
+		$this->assertArrayHasKey('Unique', $failures['email'], 'Expected player changing e-mail to another known email to fail validation due to duplicate email: Unique failure on email not present.');
 	}
 
 	
