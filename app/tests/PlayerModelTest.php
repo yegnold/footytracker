@@ -13,6 +13,10 @@ class PlayerModelTest extends TestCase {
 		$this->player = new Player;
 	}
 
+	public function tearDown() {
+		//\Mockery::close();
+	}
+
 	/**
 	 * An empty test in case setUp() fails.
 	 * This is the most basic test, verifying that Player can be instantiated.
@@ -142,15 +146,13 @@ class PlayerModelTest extends TestCase {
 	}
 
 	/**
-	 * Confirm that setting the password attribute of a Player model to a non-empty value
-	 * triggers an automated hashing of that attribute
-	 * This was shamelessly stolen as an idea from the 'Laravel Testing Decoded' book
-	 * by Jeffrey Way.
+	 * Confirm that setting the password attribute of a Player model to a new value
+	 * (through the newPassword method) triggers an automated hashing of that attribute
 	 */
 	public function testPopulatedPasswordIsHashed() {
 		// Mock the hash object using Mockery.
 		Hash::shouldReceive('make')->once()->andReturn('hashed');
-		$this->player->password = 'foo';
+		$this->player->newPassword('foo');
 		$this->assertEquals('hashed', $this->player->password, 'Expected password to be automatically hashed by the player model');
 	}
 
@@ -159,7 +161,7 @@ class PlayerModelTest extends TestCase {
 	 * hash the empty string
 	 */
 	public function testEmptyPasswordRemainsEmpty() {
-		$this->player->password = '';
+		$this->player->newPassword('');
 		$this->assertEquals('', $this->player->password, 'Empty password expected to be left as the empty string');
 	}
 
@@ -181,9 +183,14 @@ class PlayerModelTest extends TestCase {
 
 		$new_player = new \yegnold\footytracker\Player;
 	    // Validate a generated player with an ID and filled password field, but no confirm password field
-		// passing in attribtuesFor() as 'password' and 'confirm password' validation only works when a model is validated
-		// using a passed-in array.
-		$this->assertFalse($new_player->validate(Factory::attributesFor('\yegnold\footytracker\Player', array('id' => 22, 'password' => 'abc123'))), 'Expected existing player resetting password with no confirmation to fail validation');
+		// passing in attributesFor() as 'password' and 'confirm password' validation only works when a model is validated
+		// using a passed-in array (as setPasswordAttribute() method in model will hash the password)
+		$madeup_player_attributes = Factory::attributesFor('\yegnold\footytracker\Player', array('id' => 22, 'password' => 'abc123'));
+		// I think that because the password is in the Player "hidden" fields, the Factory method doesn't create it for us
+		// So we'll add this manually...
+		$madeup_player_attributes['password'] = 'abc123';
+
+		$this->assertFalse($new_player->validate($madeup_player_attributes), 'Expected existing player resetting password with no confirmation to fail validation');
 		$this->assertTrue($new_player->errors()->has('password'), 'Expected existing player resetting password with no confirmation to fail validation because of password field');
 		$failures = $new_player->failures();
 		$this->assertArrayHasKey('Confirmed', $failures['password'], 'Expected existing player resetting password with no confirmation to fail validation because of password field not being confirmed');
@@ -203,12 +210,11 @@ class PlayerModelTest extends TestCase {
 	}
 
 	/**
-	 * An existing user should be able to change their e-mail address to their own
+	 * An existing user should be able to retain their e-mail address as their own
 	 */
 	public function testIsValidWithOwnEmail() {
 		// We already created player1@footytracker.example.org in our database seeding...
 		$loaded_player = \yegnold\footytracker\Player::whereEmail('player1@footytracker.example.org')->firstOrFail();
-		$loaded_player->password = '';
 		$this->assertTrue($loaded_player->validate(), 'Expected player loaded from database to pass validation');
 	}
 

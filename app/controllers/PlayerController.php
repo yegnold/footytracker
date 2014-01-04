@@ -51,8 +51,8 @@ class PlayerController extends BaseController {
 			$this->player->first_name = Input::get('first_name');
 			$this->player->last_name = Input::get('last_name');
 			$this->player->email = Input::get('email');
-			// No  hash here, because the Player model should do this.
-			$this->player->password = Input::get('password');
+			// Passwords expected to be hashed should be set using my newPassword method on the player model...
+			$this->player->newPassword(Input::get('password'));
 			$this->player->mobile = Input::get('mobile');
 			$this->player->save();
 			return Redirect::to('player/index')->with('message', 'The player was created');

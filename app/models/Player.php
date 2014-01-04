@@ -44,22 +44,47 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
         'password' => 'required|min:6|confirmed',
     );
 
+	/**
+	 * Block mass-assignment of ID and password attributes
+	 */
+    protected $guarded = array(
+    	'id', 
+    	'password'
+    );
+
+    /**
+     * This method manipulates the validation rules against the model for existing users, whose password
+     * should only be validated by the model if it ws provided. - i.e. the requirement only exists if we've
+     * tried to update the password.
+     */
+    protected function updatePasswordValidationForExistingPlayer() {
+    	unset($this->rules['password']);
+
+		// We still want to validate the password but only if one's supplied (i.e. the user attempts to reset their password)
+		$password_sometimes_rule = array(
+			'password',
+			'required|min:6|confirmed',
+			function($input) { return (bool)strlen($input->password); }
+		);
+		$this->addSometimesRule($password_sometimes_rule);
+    }
+
+    /**
+     * This method manipulates the unique e-mail validation for an existing player, to allow the current palyer to retain their own email
+     */
+    protected function updateUniqueEmailValidationForExistingPlayer() {
+    	$this->replaceStaticRule('email', 'required|email|unique:players,email,'.(int)$this->id);
+    }
+
     protected function beforeValidate(&$data) {
     	/**
-    	 * If we're an existing player the requirement on password becomes 'optional' ('sometimes')
+    	 * If we're an existing player 
+    	 * 1) The requirement on password becomes 'optional' ('sometimes')
+    	 * 2) The 'unique' rule for email needs to ignore the current record ID.
     	 */
     	if(array_key_exists('id', $data) && strlen($data['id'])) {
-    		unset($this->rules['password']);
-
-    		// We still want to validate the password but only if one's supplied (i.e. the user attempts to reset their password)
-    		$sometimes_rules = $this->getSometimesRules();
-    		$new_sometimes_rule = array(
-    			'password',
-    			'required|min:6|confirmed',
-    			function($input) { return (bool)strlen($input->password); }
-			);
-    		array_push($sometimes_rules, $new_sometimes_rule);
-    		$this->setSometimesRules($sometimes_rules);
+    		$this->updatePasswordValidationForExistingPlayer();
+    		$this->updateUniqueEmailValidationForExistingPlayer();
     	}
     }
 
@@ -104,12 +129,13 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
 
 	/**
 	 * We want our model to handle the hashing of the password
+	 * This method should be used instead of $player_instance->password = 'xyz';
 	 */
-	public function setPasswordAttribute($password) {
+	public function newPassword($password) {
 		if(strlen($password)) {
-			$this->attributes['password'] = Hash::make($password);
+			$this->password = Hash::make($password);
 		} else {
-			$this->attributes['password'] = $password;
+			$this->password = $password;
 		}
 	}
 }
