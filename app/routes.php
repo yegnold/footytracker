@@ -21,6 +21,12 @@
  */
 
 /**
+ * I want to enable CSRF protection on all POST requests
+ */
+Route::when('*', 'csrf', array('post'));
+
+
+/**
  * I used "php artisan auth:reminders-controller" to generate the Reminders controller
  */
 Route::controller('password', 'RemindersController');
