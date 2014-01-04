@@ -100,6 +100,15 @@ class ValidatableModelTest extends TestCase {
 		$this->assertEquals($this->validatable_model->getStaticRules(), $set_requirements, 'Expected getStaticRules() to match input from setStaticRules().');
 	}
 
+	/**
+	 * Test we can use the replaceStaticRule utility method on a ValidatableModel to swap out validation rules for a field
+	 */
+	public function testReplaceStaticRule() {
+		$set_requirements = array('name' => 'required');
+		$this->validatable_model->setStaticRules($set_requirements);
+		$this->validatable_model->replaceStaticRule('name', 'min:3');
+		$this->assertSame($this->validatable_model->getStaticRules(), array('name' => 'min:3'), 'Expected static rule for name to be changed to min:3');
+	}
 
 	/**
 	 * We should only accept sometimes rules in the format of a multidimensional array
@@ -155,6 +164,22 @@ class ValidatableModelTest extends TestCase {
 		$this->validatable_model->setSometimesRules($set_sometimes);
 		// Using assertSame as this should type-check as well as value-check.
 		$this->assertSame($this->validatable_model->getSometimesRules(), $set_sometimes, "Expected output of getSometimesRules to match input to setSometimesRules when input is valid...");
+	}
+
+	/**
+	 * Verify that addSometimesRule actually adds to the sometimes_rules property of the validatable model
+	 */
+	public function testAddSometimesRule() {
+		// Reset sometimes rules.
+		$this->validatable_model->setSometimesRules(array());
+		$test_sometimes_rules = $this->getValidSometimesRules();
+		// Try to add a single sometimes rule
+		$test_add_rule = array_pop($test_sometimes_rules);
+		$this->validatable_model->addSometimesRule($test_add_rule);
+		$this->assertCount(1, $this->validatable_model->getSometimesRules(), "Expected addSometimesRule to add a single sometimes rule");
+		$test_add_rule2 = array_pop($test_sometimes_rules);
+		$this->validatable_model->addSometimesRule($test_add_rule2);
+		$this->assertCount(2, $this->validatable_model->getSometimesRules(), "Expected addSometimesRule to add a second sometimes rule");
 	}
 
 	/**

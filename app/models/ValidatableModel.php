@@ -9,7 +9,7 @@ use Validator;
  *
  * This code is taken from Dayle Rees' tutorial:
  * http://daylerees.com/trick-validation-within-models
- * He calls his model Elegant, I call mine ValidtableModel. I'm exciting!
+ * He calls his model Elegant, I call mine ValidatableModel. I'm exciting!
  * 
  */
 class ValidatableModel extends \Eloquent {
@@ -73,6 +73,15 @@ class ValidatableModel extends \Eloquent {
     }
 
     /**
+     * Utility method to replace a static rule
+     * @param string $field field name
+     * @param string $validation_rules validation rules, same as expected by Validator::make 
+     */
+    public function replaceStaticRule($field, $validation_rules) {
+        $this->rules[$field] = $validation_rules;
+    }
+
+    /**
      * This method can be used to get the 'sometimes' rules on the model
      * @return array
      */
@@ -115,6 +124,15 @@ class ValidatableModel extends \Eloquent {
         }
 
         $this->sometimes_rules = $rules; 
+    }
+
+    /**
+     * A utility method to add sometimes rules to the ones that already exist
+     */
+    public function addSometimesRule($new_sometimes_rule) {
+        $sometimes_rules = $this->getSometimesRules();
+        array_push($sometimes_rules, $new_sometimes_rule);
+        $this->setSometimesRules($sometimes_rules);
     }
 
     /**
