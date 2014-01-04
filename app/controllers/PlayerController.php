@@ -80,7 +80,7 @@ class PlayerController extends BaseController {
 		$post_data['id'] = $id;
 
 		$modify_player = Player::findOrFail($id);
-		
+
 		if($modify_player->validate($post_data)) {
 			$modify_player->first_name = Input::get('first_name');
 			$modify_player->last_name = Input::get('last_name');
@@ -98,4 +98,30 @@ class PlayerController extends BaseController {
 		}
 
 	}
+
+	/**
+	 * Show the form for deleting an existing player
+	 * @return Response
+	 */
+	public function getDelete($id) {
+
+		$delete_player = Player::findOrFail($id);
+
+		return View::make('player.delete')->with('player', $delete_player);
+	}
+
+	/**
+	 * Handle deletion of a player
+	 *
+	 * @return Response
+	 */
+	public function postDelete() {
+		// Handle the delete confirmation.
+	    $id = Input::get('id');
+	    $delete_player = Player::findOrFail($id);
+	    $delete_player->delete();
+
+	    return Redirect::to('player/index')->with('message', 'The player was deleted');
+	}
+	
 }
