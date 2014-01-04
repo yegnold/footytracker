@@ -82,7 +82,7 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
     	 * 1) The requirement on password becomes 'optional' ('sometimes')
     	 * 2) The 'unique' rule for email needs to ignore the current record ID.
     	 */
-    	if(array_key_exists('id', $data) && strlen($data['id'])) {
+    	if(isset($this->id) || (array_key_exists('id', $data) && strlen($data['id']))) {
     		$this->updatePasswordValidationForExistingPlayer();
     		$this->updateUniqueEmailValidationForExistingPlayer();
     	}
