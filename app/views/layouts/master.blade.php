@@ -1,49 +1,46 @@
-<!doctype html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>FootyTracker</title>
-	<style>
-		@import url(//fonts.googleapis.com/css?family=Lato:700);
-
-		body {
-			margin:0;
-			font-family:'Lato', sans-serif;
-			text-align:center;
-			color: #999;
-		}
-
-		.welcome {
-			width: 300px;
-			height: 200px;
-			position: absolute;
-			left: 50%;
-			top: 50%;
-			margin-left: -150px;
-			margin-top: -100px;
-		}
-
-		a, a:visited {
-			text-decoration:none;
-		}
-
-		h1 {
-			font-size: 32px;
-			margin: 16px 0 0 0;
-		}
-
-		form {
-			text-align:left;
-			width:50%;
-			margin:0 auto;
-		}
-
-		label {
-			display:block;
-		}
-	</style>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FootyTracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="{{ url('/css/bootstrap.min.css') }}" rel="stylesheet">
 </head>
 <body>
+
+	<div class="container">
+
+	<!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{ url('/') }}">FootyTracker</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ url('/player/index') }}">Players</a></li>
+            <li><a href="#">Matches</a></li>
+            <li><a href="#">Payment Status</a></li>
+            <li><a href="#">Reports</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="#">Log Out</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
 	@yield('main_content', 'error_main_content_not_defined')
+
+	</div><!--/.container -->
+
+	 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ url('/js/bootstrap.min.js') }}"></script>
 </body>
 </html>
