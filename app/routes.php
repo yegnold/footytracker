@@ -21,9 +21,9 @@
  */
 
 /**
- * I want to enable CSRF protection on all POST requests
+ * I want to enable CSRF protection on all POST, PUT and DELETE requests
  */
-Route::when('*', 'csrf', array('post'));
+Route::when('*', 'csrf', array('post', 'put', 'delete'));
 
 
 /**
