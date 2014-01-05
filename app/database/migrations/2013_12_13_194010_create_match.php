@@ -14,7 +14,7 @@ class CreateMatch extends Migration {
 		// Create the players initial database table.
 		Schema::create('matches', function($table) {
 			$table->increments('id');
-			$table->date('match_date');
+			$table->dateTime('match_date');
 			$table->mediumText('notes');
 			$table->timestamps();
 		});
