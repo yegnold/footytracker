@@ -83,6 +83,11 @@ Route::group(array('before' => 'auth'), function() {
 	 */
 	Route::controller('player', '\yegnold\footytracker\PlayerController');
 
+	/** 
+	 * Management of Matches / Meetups
+	 */
+	Route::controller('match', '\yegnold\footytracker\MatchController');
+
 
 	/**
 	 * Experiment methods to see if I understood Eloquent correctly
