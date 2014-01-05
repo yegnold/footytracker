@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'default' => 'mysql',
+	'default' => 'sqlite',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -44,18 +44,13 @@ return array(
 	|
 	*/
 
+
 	'connections' => array(
 
-
-		'mysql' => array(
-			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'footytracker',
-			'username'  => 'root',
-			'password'  => 'password',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
+		'sqlite' => array(
+			'driver'   => 'sqlite',
+			'database' => __DIR__.'/../database/production.sqlite',
+			'prefix'   => '',
 		),
 
 	),
