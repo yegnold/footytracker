@@ -18,6 +18,8 @@
  * that the controller definitions are getMethod, postMethod, etc
  * See http://laravel.com/docs/controllers#restful-controllers
  * This means we primarily use the Route::controller() method.
+ *
+ * I've made some exceptions for basc rules (like static pages, and logging in/logging out, which are handled directly here.)
  */
 
 /**
@@ -35,14 +37,25 @@ Route::get('/about', '\yegnold\footytracker\StaticPageController@about');
  */
 Route::get('/logout', function() {
 	Auth::logout();
-	return Redirect::to('/')->with('message', 'You are now logged out.');
+	return Redirect::to('/login')->with('message', 'You are now logged out.')->with('message_type', 'success');
 });
 
 /**
- * A route for logging in
+ * A route for displaying the login form...
  */
 Route::get('/login', function() {
 	return View::make('login_form');
+});
+
+/**
+ * A route for processing logins...
+ */
+Route::post('/login', function() {
+	$credentials = Input::only('email', 'password');
+	if (Auth::attempt($credentials)) {
+		return Redirect::intended('/');
+	}
+	return Redirect::to('/login')->with('message', 'Sorry, could not find a user with that e-mail address and password combinaton.')->withInput();;
 });
 
 /**
@@ -57,9 +70,13 @@ Route::controller('password', 'RemindersController');
 Route::group(array('before' => 'auth'), function() {
 
 	/**
-	 * FootyTracker homepage/dashboard
+	 * FootyTracker homepage/dashboard.
+	 * I've decided for now the dashboard is pretty pointless, so going to redirect
+	 * to the players list.
 	 */
-	Route::get('/', '\yegnold\footytracker\FootyTrackerHomeController@index');
+	Route::get('/', function() {
+		return Redirect::to('/player/index');
+	});
 
 	/** 
 	 * Management of Players

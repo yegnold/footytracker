@@ -28,15 +28,17 @@
             <li><a href="#">Matches</a></li>
             <li><a href="#">Payment Status</a></li>
             <li><a href="#">Reports</a></li>
+            <li><a href="{{ url('/about') }}">About</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li class="active"><a href="#">Log Out</a></li>
+            <li class="active"><a href="{{ url('/logout') }}">Log Out</a></li>
           </ul>
           @else
-          @endif
           <ul class="nav navbar-nav  navbar-right">
-            <li><a href="{{ url('/about') }}">About Footyracker</a></li>
+            <li><a href="{{ url('/about') }}">About FootyTracker</a></li>
           </ul>
+          @endif
+          
         </div><!--/.nav-collapse -->
       </div>
 

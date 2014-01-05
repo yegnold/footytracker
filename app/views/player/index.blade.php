@@ -3,6 +3,9 @@
 @section('main_content')
 	<h1>Players</h1>
 
+	<p class="lead">
+		This page lists details of all participants of your football meetup.  Any players that attend should be added to this list.
+	</p>
 
 	@if (Session::has('message'))
 		<p class="alert alert-success alert-dismissable">

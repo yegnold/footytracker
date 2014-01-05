@@ -10,8 +10,7 @@ class HomepageResponseTest extends ResponseTest {
 	public function testHomepageResponse()
 	{
 		$crawler = $this->client->request('GET', '/');
-		$this->isHTMLResponseOk($crawler);
-		$this->assertCount(1, $crawler->filter('h1:contains("FootyTracker")'));
+		$this->assertRedirectedTo('/player/index');
 	}
 
 }

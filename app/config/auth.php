@@ -31,7 +31,7 @@ return array(
 	/**
 	 * In footytracker we will use the 'Player' model to log in and access the app
 	 */
-	'model' => 'Player',
+	'model' => '\yegnold\footytracker\Player',
 
 	/*
 	|--------------------------------------------------------------------------

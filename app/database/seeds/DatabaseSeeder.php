@@ -31,6 +31,9 @@ class PlayerTableSeeder extends Seeder {
 		Factory::create('\yegnold\footytracker\Player', array('first_name' => 'Abc', 'last_name' => 'Jkl', 'email' => 'player1@footytracker.example.org', 'deleted_at' => null));
 		Factory::create('\yegnold\footytracker\Player', array('first_name' => 'Def', 'last_name' => 'Mno', 'email' => 'player2@footytracker.example.org', 'deleted_at' => null));
 		Factory::create('\yegnold\footytracker\Player', array('first_name' => 'Ghi', 'last_name' => 'Pqr', 'email' => 'player3@footytracker.example.org', 'deleted_at' => null));
+
+		// Create an example player we can log in as...
+		Factory::create('\yegnold\footytracker\Player', array('first_name' => 'Edward', 'last_name' => 'Yarnold', 'email' => 'yegnold@gmail.com', 'password' => Hash::make('access'), 'deleted_at' => null));
 	}
 
 }

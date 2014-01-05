@@ -15,7 +15,8 @@ return array(
 	|
 	*/
 
-	'driver' => 'smtp',
+	// Choosing to use mail at the moment as a test.
+	'driver' => 'mail',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +55,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => null, 'name' => null),
+	'from' => array('address' => 'notifications@footytracker.example.org', 'name' => 'Footytracker System'),
 
 	/*
 	|--------------------------------------------------------------------------
