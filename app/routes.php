@@ -25,6 +25,25 @@
  */
 Route::when('*', 'csrf', array('post', 'put', 'delete'));
 
+/**
+ * Basic route for the 'about' page
+ */
+Route::get('/about', '\yegnold\footytracker\StaticPageController@about');
+
+/**
+ * A route for logging out.
+ */
+Route::get('/logout', function() {
+	Auth::logout();
+	return Redirect::to('/')->with('message', 'You are now logged out.');
+});
+
+/**
+ * A route for logging in
+ */
+Route::get('/login', function() {
+	return View::make('login_form');
+});
 
 /**
  * I used "php artisan auth:reminders-controller" to generate the Reminders controller
@@ -35,7 +54,7 @@ Route::controller('password', 'RemindersController');
  * I'm using a Route Group to require authentication to access the routes below
  * As you can tell, the bulk of the application is authentication-protected.
  */
-Route::group(array(/*'before' => 'auth'*/), function() {
+Route::group(array('before' => 'auth'), function() {
 
 	/**
 	 * FootyTracker homepage/dashboard

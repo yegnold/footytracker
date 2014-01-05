@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>FootyTracker</title>
+    <title>{{ $page_title or 'FootyTracker - Track casual football attendance and payments' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="{{ url('/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -22,14 +22,20 @@
           <a class="navbar-brand" href="{{ url('/') }}">FootyTracker</a>
         </div>
         <div class="navbar-collapse collapse">
+          @if(Auth::check())
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ url('/player/index') }}">Players</a></li>
+            <li><a href="{{ url('/player/index') }}">Players</a></li>
             <li><a href="#">Matches</a></li>
             <li><a href="#">Payment Status</a></li>
             <li><a href="#">Reports</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="#">Log Out</a></li>
+          </ul>
+          @else
+          @endif
+          <ul class="nav navbar-nav  navbar-right">
+            <li><a href="{{ url('/about') }}">About Footyracker</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
