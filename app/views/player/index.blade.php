@@ -34,7 +34,8 @@
 				<tr>
 					<td>{{{ $player->first_name }}} {{{ $player->last_name }}}</td>
 					<td class="hidden-xs hidden-sm">{{{ $player->email }}}</td>
-					<td>{{{ $player->mobile }}}</td>
+					{{-- Because this screen might be accessed on a mobile, it makes sense to link mobile numbers. --}}
+					<td><a href="tel:{{{ $player->mobile }}}">{{{ $player->mobile }}}</a></td>
 					<td><a class="btn btn-info btn-sm" href="{{ url('player/edit/'.$player->id) }}"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a></td>
 					<td><a class="btn btn-warning btn-sm" href="{{ url('player/delete/'.$player->id) }}"><span class="glyphicon glyphicon-trash"></span>&nbsp;Delete</a></td>
 				</tr>
