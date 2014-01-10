@@ -5,6 +5,7 @@ use View;
 use Redirect;
 use Input;
 use Hash;
+use \Carbon\Carbon as Carbon;
 
 class MatchController extends BaseController {
 
@@ -21,10 +22,10 @@ class MatchController extends BaseController {
 	{
 
 		// Pull out upcoming Matches. No limit here.
-		$upcoming_matches = Match::where('match_date', '>=', 'NOW()')->orderBy('match_date')->get();
+		$upcoming_matches = Match::where('match_date', '>=', Carbon::now()->toDateTimeString())->orderBy('match_date')->get();
 
 		// Pull out previous Matches. Say 10 at first
-		$previous_matches = Match::where('match_date', '<', 'NOW()')->orderBy('match_date DESC')->take(10)->get();
+		$previous_matches = Match::where('match_date', '<', Carbon::now()->toDateTimeString())->orderBy('match_date DESC')->take(10)->get();
 		
 		return View::make('match.index')->with('upcoming_matches', $upcoming_matches)->with('previous_matches', $previous_matches);
 	}
