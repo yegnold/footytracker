@@ -41,4 +41,27 @@
 		</table>
 	@endif
 
+	<h2>Old Meetups</h2>
+	@if ($previous_matches->isEmpty())
+		<p>No past meetups exist.</p>
+	@else
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th colspan="2">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($previous_matches as $match)
+				<tr>
+					<td>{{{ \Carbon\Carbon::parse($match->match_date)->formatLocalized('%A %d %B %Y') }}}</td>
+					<td><a class="btn btn-info btn-sm" href="{{ url('match/edit/'.$match->id) }}"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit</a></td>
+					<td><a class="btn btn-warning btn-sm" href="{{ url('match/delete/'.$match->id) }}"><span class="glyphicon glyphicon-trash"></span>&nbsp;Delete</a></td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+	@endif
+
 @stop

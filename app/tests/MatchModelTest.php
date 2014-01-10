@@ -65,11 +65,6 @@ class MatchModelTest extends TestCase {
 		$this->assertTrue($this->match->validate(array('match_date' => 'February 28th 2014')), 'Expected model to pass validation with a valid match date.');
 	}
 	
-	public function testMatchDateConvertedToCarbonInstance() {
-		$this->match->match_date = '2014-02-28';
-		$this->assertInstanceOf('\Carbon\Carbon', $this->match->match_date, 'Expected match_date to be mutated to an instance of Carbon.');
-	}
-
 	/**
 	 * Verify that we are automatically converting the match date to a persistable format
 	 */
@@ -78,4 +73,12 @@ class MatchModelTest extends TestCase {
 		$this->assertEquals('2014-02-28 00:00:00', $this->match->match_date);
 	}
 	
+	/**
+	 * Test that we can save a new match
+	 */
+	public function testSaveNewMatch() {
+		$this->refreshApplication();
+		$this->match->match_date = '28 February 2014';
+		$this->match->save();
+	}
 }

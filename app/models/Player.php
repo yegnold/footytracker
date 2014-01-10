@@ -133,9 +133,9 @@ class Player extends ValidatableModel implements UserInterface, RemindableInterf
 	 */
 	public function newPassword($password) {
 		if(strlen($password)) {
-			$this->password = Hash::make($password);
+			$this->attributes['password'] = Hash::make($password);
 		} else {
-			$this->password = $password;
+			$this->attributes['password'] = $password;
 		}
 	}
 }

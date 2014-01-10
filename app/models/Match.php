@@ -38,6 +38,13 @@ class Match extends ValidatableModel {
     	'id', 
     );
 
+    /**
+     * Default attribute - empty string for notes, rather than NULL.
+     */
+    protected $attributes = array(
+    	'notes' => ''
+    );
+
 	/** 
 	 * One match has Many teams. It would be good if we could introduce a limitation to 2 teams here?
 	 */
@@ -46,20 +53,12 @@ class Match extends ValidatableModel {
 	}
 
 	/**
-	 * IF we can, we want to convert human-specified fuzzy dates to more scientifc date formats
+	 * IF we can, we want to convert human-specified fuzzy dates to more DB storage engine friendly date formats
 	 * We can do this using Carbon
 	 */
 	public function setMatchDateAttribute($attribute_value)
 	{
-		$this->match_date = Carbon::parse($attribute_value);
+		$this->attributes['match_date'] = Carbon::parse($attribute_value)->toDateTimeString();
 	}
 
-	/**
-	 * We want the match date to automatically mutate to a Carbon instance,
-	 * so I'm using the getDates() helper method to help with this 
-	 */
-	public function getDates()
-	{
-	    return array('created_at', 'updated_at', 'deleted_at', 'match_date');
-	}
 }
