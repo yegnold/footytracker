@@ -24,7 +24,7 @@
         <div class="navbar-collapse collapse">
           @if(Auth::check())
           <ul class="nav navbar-nav">
-            <li><a href="{{ url('/player') }}">Players</a></li>
+            <li><a href="{{ url('/player') }}">Players <span class="badge">{{{ $players_count }}}</span></a></li>
             <li><a href="{{ url('/match') }}">Meetups</a></li>
             <li><a href="#">Payment Status</a></li>
             <li><a href="#">Reports</a></li>

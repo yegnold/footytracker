@@ -79,3 +79,14 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+/*
+|--------------------------------------------------------------------------
+| Require The View Composers File
+|--------------------------------------------------------------------------
+|
+| I've used View Composers to add common variables across known views.
+|
+*/
+
+require app_path().'/view_composers.php';
