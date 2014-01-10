@@ -20,7 +20,7 @@
 	@if ($players->isEmpty())
 		<p>No players have been added yet.</p>
 	@else
-		<table class="table">
+		<table class="table table-hover table-condensed">
 			<thead>
 				<tr>
 					<th>Name</th>
